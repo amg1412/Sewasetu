@@ -1,0 +1,8 @@
+FAILED tests/test_fix5_names_dates.py::test_assamese_name_is_stored_in_full
+FAILED tests/test_fix5_names_dates.py::test_hindi_and_long_latin_names_are_stored_in_full
+FAILED tests/test_fix5_names_dates.py::test_stored_name_reads_back_in_the_admin_panel
+FAILED tests/test_fix5_names_dates.py::test_dates_are_day_first - AssertionEr...
+FAILED tests/test_fix5_names_dates.py::test_month_first_date_is_refused_with_a_clear_message
+FAILED tests/test_fix5_names_dates.py::test_every_validation_failure_names_the_problem
+FAILED tests/test_fix5_names_dates.py::test_bad_mobile_and_bad_login_are_explained
+7 failed, 1 passed in 1.65s

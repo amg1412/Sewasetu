@@ -1,0 +1,29 @@
+# Local secrets and deployment settings
+.env
+.env.*
+!.env.example
+
+# Citizen data and production logs are supplied outside the repository
+/seed/seed.sql
+/logs/
+*.log
+
+# User uploads and local runtime data
+/uploads/
+/app/uploads/
+/app/logs/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.coverage
+
+# Private keys and local machine files
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+.DS_Store

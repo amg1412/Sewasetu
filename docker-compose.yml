@@ -1,0 +1,53 @@
+services:
+  db:
+    restart: unless-stopped
+    image: postgres:15
+    environment:
+      POSTGRES_DB: sewasetu
+      POSTGRES_USER: sewasetu
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./app/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./seed/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+
+  app:
+    build: ./app
+    environment:
+      SS_SECRET_KEY: ${SS_SECRET_KEY:?set SS_SECRET_KEY in .env}
+      SS_ADMIN_USERNAME: ${SS_ADMIN_USERNAME:-admin}
+      SS_ADMIN_PASSWORD: ${SS_ADMIN_PASSWORD:?set SS_ADMIN_PASSWORD in .env}
+      SS_DB_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - smsgw
+    volumes:
+      - uploads:/var/sewasetu/uploads
+      - applogs:/var/log/sewasetu
+
+  scheduler:
+    restart: unless-stopped
+    build: ./app
+    command: ["cron", "-f"]
+    environment:
+      SS_DB_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    depends_on:
+      - db
+    volumes:
+      - applogs:/var/log/sewasetu
+
+  smsgw:
+    restart: unless-stopped
+    build: ./smsgw
+    # internal only — reached by the app over the docker network and exposed to
+    # users via the app at /__gateway/ (so no second host port is needed)
+    expose:
+      - "8025"
+
+volumes:
+  pgdata:
+  uploads:
+  applogs:
